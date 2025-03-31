@@ -259,7 +259,7 @@
 
             <!-- Main content -->
             <section class="content">
-                <p>Main content</p>
+                @yield('main-content')
             </section>
             <!-- /.content -->
         </div>
