@@ -1,5 +1,8 @@
 @extends('dashboard')
 
+@section('username')
+<a href="#" class="d-block">{{ $nama_dokter }}</a>
+@endsection
 
 @section('main-content')
 <div class="card">
@@ -13,29 +16,26 @@
                 <tr>
                     <th>NO</th>
                     <th>ID Periksa</th>
-                    <th>Pasien</th>
+                    <th>ID Pasien</th>
                     <th>Tanggal Periksa</th>
                     <th>Catatan</th>
                     <th>Biaya Periksa</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>{no}</td>
-                    <td>{id periksa}</td>
-                    <td>{pasien}</td>
-                    <td>{tgl}</td>
-                    <td>{ctt}</td>
-                    <td>{biaya}</td>
-                </tr>
-                <tr>
-                    <td>{no}</td>
-                    <td>{id periksa}</td>
-                    <td>{pasien}</td>
-                    <td>{tgl}</td>
-                    <td>{ctt}</td>
-                    <td>{biaya}</td>
-                </tr>
+                @foreach ($periksas as $periksa)
+
+                    <tr>
+                        <td>{{$loop->iteration}}</td>
+                        <td>{{ $periksa->id }}</td>
+                        <td>{{ $periksa->pasien->nama }}</td>
+                        <td>{{ $periksa->tgl_periksa }}</td>
+                        <td>{{ $periksa->catatan }}</td>
+                        <td>{{ $periksa->biaya_periksa }}</td>
+                    </tr>
+
+                @endforeach
+
             </tbody>
         </table>
     </div>

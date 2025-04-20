@@ -1,43 +1,35 @@
 @extends('dashboard')
 
+@section('username')
+    <a href="#" class="d-block">{{ $nama_dokter }}</a>
+@endsection
+
+
 @section('main-content')
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Quick Example</h3>
+        <h3 class="card-title">Input new Obat</h3>
     </div>
     <!-- /.card-header -->
     <!-- form start -->
-    <form>
+    <form action="{{ route('dokter-obat-store') }}" method="POST">
+        @csrf
         <div class="card-body">
             <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                <label for="nama_obat">Nama Obat</label>
+                <input type="text" name="nama_obat" class="form-control" placeholder="Input nama obat">
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                <label for="kemasan">Kemasan</label>
+                <input type="text" name="kemasan" class="form-control" placeholder="Input kemasan">
             </div>
             <div class="form-group">
-                <label for="exampleInputFile">File input</label>
-                <div class="input-group">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="exampleInputFile">
-                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                    </div>
-                    <div class="input-group-append">
-                        <span class="input-group-text">Upload</span>
-                    </div>
-                </div>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                <label for="harga">Harga</label>
+                <input type="number" name="harga" class="form-control" placeholder="Input harga">
             </div>
         </div>
-        <!-- /.card-body -->
-
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Tambah Obat</button>
         </div>
     </form>
 </div>
@@ -45,7 +37,6 @@
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">List obat</h3>
-
         <div class="card-tools">
             <ul class="pagination pagination-sm float-right">
                 <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
@@ -70,20 +61,25 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach($obats as $index => $obat)
                 <tr>
-                    <td>{no}</td>
-                    <td>{id obat}</td>
-                    <td>{nama}</td>
-                    <td>{kemasan}</td>
-                    <td>{harga}</td>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ 'B' . str_pad($obat->id, 3, '0', STR_PAD_LEFT) }}</td>
+                    <td>{{ $obat['nama_obat'] }}</td>
+                    <td>{{ $obat['kemasan'] }}</td>
+                    <td>{{ $obat['harga'] }}</td>
                     <td>
                         <div style="display: flex; flex-direction: row; column-gap: 10px;">
-                            <button type="button" class="btn btn-danger" style="width: fit-content;">Hapus</button>
-                            <button type="button" class="btn btn-warning" style="width: fit-content;">Edit</button>
+                            <form action="{{ route('dokter-obat-delete', $obat->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger" style="width: fit-content;">Hapus</button>
+                            </form>
+                            <a href="{{ route('dokter-obat-edit', $obat->id) }}" type="button" class="btn btn-warning" style="width: fit-content;">Edit</a>
                         </div>
                     </td>
                 </tr>
-
+                @endforeach
             </tbody>
         </table>
     </div>
