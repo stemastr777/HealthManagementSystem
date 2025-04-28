@@ -6,19 +6,14 @@ use App\Models\Obat;
 use App\Models\Periksa;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DokterController extends Controller
 {
-    protected $userID = 5;
-
-    public function __construct()
-    {
-        $this->userID;
-    }
 
     public function index()
     {
-        $dokter = User::where('id', $this->userID)->first();
+        $dokter = User::where('id', Auth::user()->id)->first();
         $nama_dokter = $dokter->nama;
 
         $banyak_obat = count(Obat::all());
@@ -27,10 +22,10 @@ class DokterController extends Controller
     }
     
     public function periksa() {
-        $dokter = User::where('id', $this->userID)->first();
+        $dokter = User::where('id', Auth::user()->id)->first();
         $nama_dokter = $dokter->nama;
 
-        $periksas = Periksa::where('id_dokter', $this->userID)
+        $periksas = Periksa::where('id_dokter', Auth::user()->id)
                     ->orderby('tgl_periksa', 'desc')
                     ->get();
 
@@ -40,7 +35,7 @@ class DokterController extends Controller
     public function showObat()
     {
 
-        $dokter = User::where('id', $this->userID)->first();
+        $dokter = User::where('id', Auth::user()->id)->first();
         $nama_dokter = $dokter->nama;
 
         $obats = Obat::all();
@@ -96,7 +91,7 @@ class DokterController extends Controller
     public function editObat($id)
     {
 
-        $dokter = User::where('id', $this->userID)->first();
+        $dokter = User::where('id', Auth::user()->id)->first();
         $nama_dokter = $dokter->nama;
 
         $obat = Obat::findOrFail($id);

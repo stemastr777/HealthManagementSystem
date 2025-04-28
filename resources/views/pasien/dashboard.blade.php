@@ -1,7 +1,7 @@
 @extends('dashboard')
 
 @section('username')
-  <a href="#" class="d-block">{{ $pasien_name }}</a>
+  {{ $pasien_name }}
 @endsection
 
 @section('main-content')

@@ -1,11 +1,11 @@
 @extends('dashboard')
 
 @section('username')
-<a href="#" class="d-block">{{ $nama_dokter }}</a>
+    {{ $nama_dokter }}
 @endsection
 
 @section('main-content')
-<div class="card">
+<div class="card card-primary">
     <div class="card-header">
         <h3 class="card-title">Periksa</h3>
     </div>
