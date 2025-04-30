@@ -2,7 +2,7 @@
 
 
 @section('main-content')
-<div class="card">
+<div class="card card-primary">
   <div class="card-header">
     <h3 class="card-title">Riwayat periksa</h3>
   </div>
@@ -13,7 +13,7 @@
         <tr>
           <th>NO</th>
           <th>ID Periksa</th>
-          <th>ID Dokter</th>
+          <th>Nama Dokter</th>
           <th>Tanggal Periksa</th>
           <th>Catatan</th>
           <th>Obat</th>
@@ -24,12 +24,18 @@
         @foreach ($riwayats as $riwayat)
         
           <tr>
-            <td>{{$loop->iteration}}</td>
+            <td>{{ $loop->iteration }}</td>
             <td>{{ $riwayat->id }}</td>
             <td>{{ $riwayat->dokter->nama }}</td>
             <td>{{ $riwayat->tgl_periksa }}</td>
             <td>{{ $riwayat->catatan }}</td>
-            <td>{obat}</td>
+            <td>
+              <ul style="padding: 10px;">
+                @foreach ($riwayat->detailPeriksa as $detail)
+                    <li>{{$detail->obat->nama_obat}}</li>
+                @endforeach
+              </ul>
+            </td>
             <td>{{ $riwayat->biaya_periksa }}</td>
           </tr>
 

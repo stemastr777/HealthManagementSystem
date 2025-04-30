@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetailPeriksa;
 use App\Models\Obat;
 use App\Models\Periksa;
 use App\Models\User;
@@ -28,8 +29,51 @@ class DokterController extends Controller
         $periksas = Periksa::where('id_dokter', Auth::user()->id)
                     ->orderby('tgl_periksa', 'desc')
                     ->get();
-
+    
         return view('dokter.periksa', compact('nama_dokter', 'periksas'));
+    }
+
+    public function periksaPasien($id) {
+        $dokter = User::where('id', Auth::user()->id)->first();
+        $nama_dokter = $dokter->nama;
+
+        $periksa = Periksa::find($id);
+        $obats = Obat::all();
+
+        $selected_obats = DetailPeriksa::where('id_periksa', $id)->pluck('id_obat')->toArray();
+
+        return view('dokter.editPeriksa', compact('nama_dokter', 'periksa', 'obats', 'selected_obats'));
+    }
+
+    public function createDetailPeriksa(Request $request, $id) {
+        
+        Periksa::updateOrCreate(
+            ['id' => $id], 
+            [
+                'catatan' => $request['catatan'],
+                'biaya_periksa' => $request['biaya_periksa']
+        ]);
+
+        $in_db = DetailPeriksa::where('id_periksa', $id)->get();
+        foreach ($in_db as $model_in_db) {
+            if (in_array($model_in_db->id_obat, $request->obats)) {
+                $model_in_db->touch();
+            } else {
+                $model_in_db->delete();     
+            }
+        }
+
+        $obat_in_db = DetailPeriksa::where('id_periksa', $id)->pluck('id_obat')->toArray();
+        foreach ($request->obats as $obat) {
+            if (!in_array($obat, $obat_in_db)) {
+                DetailPeriksa::create([
+                    'id_periksa' => $id,
+                    'id_obat' => $obat
+                ]);
+            }
+        }
+
+        return redirect()->route('dokter-periksa');
     }
 
     public function showObat()

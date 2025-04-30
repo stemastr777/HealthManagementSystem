@@ -35,6 +35,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/dokter', [DokterController::class, 'index'])->name('dokter-dashboard');
 
             Route::get('/dokter/periksa', [DokterController::class, 'periksa'])->name('dokter-periksa');
+            
+            Route::get('/dokter/periksa/{id}', [DokterController::class, 'periksaPasien'])->name('dokter-periksa-pasien');
+            
+            Route::post('/dokter/periksa/{id}', [DokterController::class, 'createDetailPeriksa'])->name('dokter-create-detail-periksa');
 
             Route::get('/dokter/obat', [DokterController::class, 'showObat'])->name('dokter-obat');
 
