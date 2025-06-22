@@ -1,7 +1,7 @@
 @extends('dashboard')
 
 @section('username')
-{{ $nama_dokter }}
+{{ $username }}
 @endsection
 
 @section('main-content')
@@ -30,7 +30,7 @@
                 <tr>
                     <td>{{$loop->iteration}}</td>
                     <td>{{ $periksa->id }}</td>
-                    <td>{{ $periksa->pasien->nama }}</td>
+                    <td>{{ $periksa->daftarPolis->pasiens->nama }}</td>
                     <td>{{ $periksa->tgl_periksa }}</td>
 
                     @if ($periksa->biaya_periksa === 0)
@@ -43,7 +43,7 @@
                     @else
                     <td style="max-width: 300px;">
                         <ul style="padding: 10px;">
-                            @foreach ($periksa->detailPeriksa as $detail)
+                            @foreach ($periksa->detailPeriksas as $detail)
                                 <li>{{$detail->obat->nama_obat}}</li>
                             @endforeach
                         </ul>
@@ -53,7 +53,7 @@
                     <td>
                         <a href="{{route('dokter-periksa-pasien', $periksa->id)}}" type="button" class="btn btn-warning" style="width: 85px;">Update</a>
                         <p style="font-size:smaller; font-weight: 700; margin-bottom:0; margin-top:10px;">Updated at:</p>
-                        <p style="opacity: 0.8; font-style:italic; font-size:small">{{ $periksa->detailPeriksa->first()->updated_at }}</p>
+                        <p style="opacity: 0.8; font-style:italic; font-size:small">{{ $periksa->detailPeriksas->first()->updated_at }}</p>
                     </td>
                     @endif
                 </tr>

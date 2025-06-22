@@ -1,35 +1,35 @@
 @extends('dashboard')
 
 @section('username')
-    {{ $username }}
+admin
 @endsection
 
 
 @section('main-content')
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Input new Obat</h3>
+        <h3 class="card-title">Manage Obat</h3>
     </div>
     <!-- /.card-header -->
     <!-- form start -->
-    <form action="{{ route('dokter-store-obat') }}" method="POST">
+    <form action="{{ route('admin-update-or-create-obat') }}" method="POST">
         @csrf
         <div class="card-body">
             <div class="form-group">
                 <label for="nama_obat">Nama Obat</label>
-                <input type="text" name="nama_obat" class="form-control" placeholder="Input nama obat">
+                <input type="text" name="nama_obat" class="form-control" placeholder="Input nama obat" value="{{$obat_in_edit?->nama_obat ?? ''}}" />
             </div>
             <div class="form-group">
                 <label for="kemasan">Kemasan</label>
-                <input type="text" name="kemasan" class="form-control" placeholder="Input kemasan">
+                <input type="text" name="kemasan" class="form-control" placeholder="Input kemasan" value="{{$obat_in_edit?->kemasan ?? ''}}">
             </div>
             <div class="form-group">
                 <label for="harga">Harga</label>
-                <input type="number" name="harga" class="form-control" placeholder="Input harga">
+                <input type="number" name="harga" class="form-control" placeholder="Input harga" value="{{$obat_in_edit?->harga ?? ''}}">
             </div>
         </div>
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Tambah Obat</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
         </div>
     </form>
 </div>
@@ -70,12 +70,12 @@
                     <td>{{ $obat['harga'] }}</td>
                     <td>
                         <div style="display: flex; flex-direction: row; column-gap: 10px;">
-                            <form action="{{ route('dokter-delete-obat', $obat->id) }}" method="POST" style="display: inline;">
+                            <form action="{{ route('admin-delete-obat', $obat->id) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger" style="width: fit-content;">Hapus</button>
                             </form>
-                            <a href="{{ route('dokter-edit-obat', $obat->id) }}" type="button" class="btn btn-warning" style="width: fit-content;">Edit</a>
+                            <a href="{{ route('admin-edit-obat', $obat->id) }}" type="button" class="btn btn-warning" style="width: fit-content;">Edit</a>
                         </div>
                     </td>
                 </tr>

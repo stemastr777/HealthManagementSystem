@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -22,9 +22,9 @@ class User extends Authenticatable
         'nama',
         'alamat',
         'no_hp',
-        'email',
         'password',
         'role',
+        'is_active'
     ];
 
     /**
@@ -45,19 +45,18 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
 
-    public function pasiens(): HasMany
+    public function pasien(): HasOne
     {
-        return $this->hasMany(Periksa::class, 'id_pasien');
+        return $this->hasOne(Pasien::class, 'user_id');
     }
 
-    public function dokters(): HasMany
+    public function dokter(): HasOne
     {
-        return $this->hasMany(Periksa::class, 'id_dokter');
+        return $this->hasOne(Dokter::class, 'user_id');
     }
 
 }

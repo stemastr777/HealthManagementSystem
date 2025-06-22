@@ -23,7 +23,7 @@
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        <form method="POST" action="{{ route('dokter-obat-update',$obat->id) }}">
+                        <form method="POST" action="{{ route('dokter-update-obat',$obat->id) }}">
                             @csrf
                             @method('PUT')
                             <div class="card-body">

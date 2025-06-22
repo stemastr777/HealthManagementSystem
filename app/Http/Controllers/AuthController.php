@@ -10,18 +10,18 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
 
-    public function showLogin() {
+    public function showLoginPage() {
         return view('auth.login');
     }
 
-    public function showRegister() {
+    public function showRegisterPage() {
         return view('auth.register');
     }
 
     public function login(Request $request) {
 
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'nama' => ['required'],
             'password' => ['required']
         ]);
 
@@ -33,6 +33,8 @@ class AuthController extends Controller
                 return redirect()->route('dokter-dashboard');
             } else if ($user->role === 'pasien') {
                 return redirect()->route('pasien-dashboard');
+            } else if ($user->role === 'admin') {
+                return redirect()->route('admin-dashboard');
             } else {
                 return redirect()->route('login');
             }
@@ -57,18 +59,16 @@ class AuthController extends Controller
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_hp' => 'required|string|max:255',
-            'email' => 'required|string|max:255',
             'password' => 'required|string|max:255',
             'role' => 'required|string|max:255',
         ]);
 
         User::updateOrCreate(
-            ['email' => $new_user['email']],
+            ['nama' => $new_user['nama']],
             [
                 'nama' => $new_user['nama'],
                 'alamat' => $new_user['alamat'],
                 'no_hp' => $new_user['no_hp'],
-                'email' => $new_user['email'],
                 'password' => Hash::make($new_user['password']),
                 'role' => $new_user['role'],
                 'created_at' => now(),

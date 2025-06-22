@@ -1,42 +1,38 @@
 @extends('dashboard')
 
 @section('username')
-    {{ $username }}
+admin
 @endsection
 
 
 @section('main-content')
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Input new Obat</h3>
+        <h3 class="card-title">Manage Poli</h3>
     </div>
     <!-- /.card-header -->
     <!-- form start -->
-    <form action="{{ route('dokter-store-obat') }}" method="POST">
+    <form action="{{ route('admin-update-or-create-poli') }}" method="POST">
         @csrf
         <div class="card-body">
             <div class="form-group">
-                <label for="nama_obat">Nama Obat</label>
-                <input type="text" name="nama_obat" class="form-control" placeholder="Input nama obat">
+                <label for="nama">Nama Poli</label>
+                <input type="text" name="nama" class="form-control" placeholder="Input nama poli" value="{{$poli_in_edit?->nama_poli ?? ''}}" />
             </div>
             <div class="form-group">
-                <label for="kemasan">Kemasan</label>
-                <input type="text" name="kemasan" class="form-control" placeholder="Input kemasan">
-            </div>
-            <div class="form-group">
-                <label for="harga">Harga</label>
-                <input type="number" name="harga" class="form-control" placeholder="Input harga">
+                <label for="keterangan">Keterangan</label>
+                <input type="text" name="keterangan" class="form-control" placeholder="Input password" value="{{$poli_in_edit?->keterangan ?? ''}}" />
             </div>
         </div>
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Tambah Obat</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
         </div>
     </form>
 </div>
 <br />
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">List obat</h3>
+        <h3 class="card-title">List poli</h3>
         <div class="card-tools">
             <ul class="pagination pagination-sm float-right">
                 <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
@@ -53,29 +49,25 @@
             <thead>
                 <tr>
                     <th style="width: 10px">NO</th>
-                    <th>ID Obat</th>
-                    <th>Nama Obat</th>
-                    <th>Kemasan</th>
-                    <th>Harga</th>
+                    <th>Nama</th>
+                    <th>Keterangan</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($obats as $index => $obat)
+                @foreach($polis as $index => $poli)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td>{{ 'B' . str_pad($obat->id, 3, '0', STR_PAD_LEFT) }}</td>
-                    <td>{{ $obat['nama_obat'] }}</td>
-                    <td>{{ $obat['kemasan'] }}</td>
-                    <td>{{ $obat['harga'] }}</td>
+                    <td>{{ $poli->nama_poli }}</td>
+                    <td>{{ $poli->keterangan }}</td>
                     <td>
                         <div style="display: flex; flex-direction: row; column-gap: 10px;">
-                            <form action="{{ route('dokter-delete-obat', $obat->id) }}" method="POST" style="display: inline;">
+                            <form action="{{ route('admin-delete-poli', $poli->id) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger" style="width: fit-content;">Hapus</button>
                             </form>
-                            <a href="{{ route('dokter-edit-obat', $obat->id) }}" type="button" class="btn btn-warning" style="width: fit-content;">Edit</a>
+                            <a href="{{ route('admin-edit-poli', $poli->id) }}" type="button" class="btn btn-warning" style="width: fit-content;">Edit</a>
                         </div>
                     </td>
                 </tr>

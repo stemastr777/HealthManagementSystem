@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{{ asset('lte/AdminLTE/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('lte/AdminLTE/dist/css/adminlte.min.css') }}">
+
+    @livewireStyles
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -80,11 +82,15 @@
 
                         @if ($user_type === 'pasien')
                         @php
-                        $available_pages = ['periksa', 'riwayat'];
+                        $available_pages = ['daftar-poli', 'riwayat'];
                         @endphp
                         @elseif ($user_type === 'dokter')
                         @php
-                        $available_pages = ['periksa', 'obat'];
+                        $available_pages = ['profile', 'jadwal-periksa', 'periksa', 'obat'];
+                        @endphp
+                        @elseif ($user_type === 'admin')
+                        @php
+                        $available_pages = ['dokter', 'pasien', 'poli', 'obat'];
                         @endphp
                         @endif
 
@@ -162,6 +168,8 @@
     <script src="{{ asset('lte/AdminLTE/dist/js/adminlte.min.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('lte/AdminLTE/dist/js/demo.js') }}"></script>
+
+    @livewireScripts
 </body>
 
 </html>
