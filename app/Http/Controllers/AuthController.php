@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Pasien;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -55,24 +58,51 @@ class AuthController extends Controller
 
     public function register(Request $request) {
 
-        $new_user = $request->validate([
+        $validatedRequest = $request->validate([
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_hp' => 'required|string|max:255',
+            'no_ktp' => 'required|numeric',
             'password' => 'required|string|max:255',
             'role' => 'required|string|max:255',
         ]);
 
-        User::updateOrCreate(
-            ['nama' => $new_user['nama']],
+        $new_account = User::updateOrCreate(
+            ['nama' => $validatedRequest['nama']],
             [
-                'nama' => $new_user['nama'],
-                'alamat' => $new_user['alamat'],
-                'no_hp' => $new_user['no_hp'],
-                'password' => Hash::make($new_user['password']),
-                'role' => $new_user['role'],
+                'nama' => $validatedRequest['nama'],
+                'alamat' => $validatedRequest['alamat'],
+                'no_hp' => $validatedRequest['no_hp'],
+                'password' => Hash::make($validatedRequest['password']),
+                'role' => $validatedRequest['role'],
                 'created_at' => now(),
                 'updated_at' => now(),
+            ]
+        );
+
+        $pasien = Pasien::find($new_account->id);
+        if ($pasien) {
+            $new_no_rm = $pasien->no_rm;
+        } else {
+            $no_rm_prefix = Carbon::now()->format('Ym');
+            $last_no_rm = Pasien::where('no_rm', 'like', $no_rm_prefix . '%')
+                ->orderBy('no_rm', 'desc')
+                ->pluck('no_rm')
+                ->first();
+
+            if (is_null($last_no_rm)) {
+                $new_no_rm = $no_rm_prefix . '-0001';
+            } else {
+                $new_no_rm = $no_rm_prefix . '-' . str_pad((int) substr($last_no_rm, 7) + 1, 4, '0', STR_PAD_LEFT);
+            }
+        }
+
+        $new_pasien = Pasien::updateOrCreate(
+            ['user_id' => $new_account->id],
+            [
+                'user_id' => $new_account->id,
+                'no_ktp' => $validatedRequest["no_ktp"],
+                'no_rm' =>  $new_no_rm
             ]
         );
 

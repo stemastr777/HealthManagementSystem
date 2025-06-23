@@ -65,12 +65,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/dokter/periksa/{id}', [DokterController::class, 'examinePasien'])->name('dokter-periksa-pasien');
             Route::post('/dokter/periksa/{id}', [DokterController::class, 'createDetailPeriksa'])->name('dokter-create-detail-periksa');
 
-            Route::get('/dokter/obat', [DokterController::class, 'showObatLandingPage'])->name('dokter-show-obat');
-            Route::post('/dokter/obat', [DokterController::class, 'storeObat'])->name('dokter-store-obat');
-            Route::get('/dokter/obat/edit/{id}', [DokterController::class, 'showEditObatPage'])->name('dokter-edit-obat');
-            Route::put('/dokter/obat/update/{id}', [DokterController::class, 'updateObat'])->name('dokter-update-obat');
-            Route::delete('/dokter/obat/delete/{id}', [DokterController::class, 'deleteObat'])->name('dokter-delete-obat');
-
             Route::get('/dokter/profile', [DokterController::class, 'showProfileLandingPage'])->name('dokter-show-profile');
             Route::put('/dokter/update-profile', [DokterController::class, 'updateProfile'])->name('dokter-update-profile');
         });

@@ -27,9 +27,15 @@ class DokterController extends Controller
 
         $num_of_available_obat = count(Obat::all());
 
-        $num_of_unchecked_pasien = Periksa::where('tgl_periksa', '>', now())->count();
-        
-        return view('dokter.dashboard', compact('num_of_available_obat', 'num_of_unchecked_pasien', 'username'));
+        $num_of_unchecked_pasien = Periksa::with('daftarPolis.jadwalPeriksa')
+            ->whereNull('catatan')
+            ->whereHas('daftarPolis.jadwalPeriksa', function ($query) use ($current_account) {
+                $query->where('id_dokter', $current_account->id);
+            })
+            ->get()
+            ->count();
+
+        return view('dokter.dashboard', compact('num_of_unchecked_pasien', 'username'));
     }
     
     public function showPeriksaLandingPage() {
@@ -96,72 +102,6 @@ class DokterController extends Controller
         return redirect()->route('dokter-show-periksa');
     }
 
-    public function showObatLandingPage()
-    {
-
-        $current_account = $this->getCurrentAccount();
-        $username = $current_account->nama;
-
-        $obats = Obat::all();
-
-        return view('dokter.obat', compact('username', 'obats'));
-    }
-
-    public function storeObat(Request $request)
-    {
-        $validatedRequest = $request->validate([
-            'nama_obat' => 'required|string|max:255',
-            'kemasan' => 'required|string|max:255',
-            'harga' => 'required|numeric'
-        ]);
-
-        Obat::create([
-            'nama_obat' => $validatedRequest['nama_obat'],
-            'kemasan' => $validatedRequest['kemasan'],
-            'harga' => $validatedRequest['harga']
-        ]);
-
-        return redirect()->route('dokter-show-obat');
-    }
-
-    public function updateObat(Request $request, $id)
-    {
-
-        $validatedRequest = $request->validate([
-            'nama_obat' => 'required|string|max:255',
-            'kemasan' => 'required|string|max:255',
-            'harga' => 'required|numeric',
-        ]);
-
-        $obat = Obat::findOrFail($id);
-
-        $obat->update([
-            'nama_obat' => $validatedRequest['nama_obat'],
-            'kemasan' => $validatedRequest['kemasan'],
-            'harga' => $validatedRequest['harga'],
-        ]);
-
-        return redirect()->route('dokter-obat');
-    }
-
-    public function deleteObat($id)
-    {
-
-        $obat = Obat::findOrFail($id);
-        $obat->delete();
-
-        return redirect()->route('dokter-obat');
-    }
-
-    public function showEditObatPage($id)
-    {
-
-        $current_account = $this->getCurrentAccount();
-        $username = $current_account->nama;
-
-        $obat = Obat::findOrFail($id);
-        return view('dokter.obatEdit', compact('username', 'obat'));
-    }
 
     public function showProfileLandingPage() {
         $current_account = Dokter::with(['user', 'polis'])
@@ -226,7 +166,7 @@ class DokterController extends Controller
 
     public function activateJadwalPeriksa($id) {
 
-        $old_jadwal = JadwalPeriksa::where('is_active', 'true');
+        $old_jadwal = JadwalPeriksa::where(['is_active' => 'true', 'id_dokter' => $this->getCurrentAccount()->id]);
         $old_jadwal->update(['is_active' => 'false']);
 
         $new_jadwal = JadwalPeriksa::where('id', $id);

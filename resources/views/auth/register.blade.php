@@ -23,12 +23,12 @@
                 <a href="#" class="h1">HelthMeneji</a>
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Register a new account</p>
+                <p class="login-box-msg">Register a new patient account</p>
 
                 <form action="{{ route('register') }}" method="post">
                     @csrf
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="nama" placeholder="Full name">
+                        <input type="text" class="form-control" name="nama" placeholder="Username">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -47,12 +47,13 @@
                         <input type="text" class="form-control" name="alamat" placeholder="Alamat">
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                                <span class="fa fa-map-marker">
+                                </span>
                             </div>
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="role" placeholder="Role">
+                        <input type="text" class="form-control" name="role" placeholder="Role" value="pasien" readonly>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -63,7 +64,17 @@
                         <input type="tel" class="form-control" name="no_hp" placeholder="Nomor hp">
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                                <span class="fa fa-phone">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="no_ktp" placeholder="Nomor KTP">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fa fa-id-card">
+                                </span>
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DaftarPoli;
+use App\Models\JadwalPeriksa;
 use App\Models\Periksa;
+use App\Models\Poli;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,23 +22,41 @@ class PasienController extends Controller
         $current_account = $this->getCurrentAccount();
         $username = $current_account->nama;
 
-        $riwayats = DaftarPoli::where('id_pasien', Auth::user()->id)->get();
-        $num_of_riwayats = count($riwayats);
+        $riwayats = DaftarPoli::with(['periksa'])
+            ->where('id_pasien', Auth::user()->id)
+            ->whereHas('periksa', function ($query) {
+                $query->whereNotNull('catatan');
+            })
+            ->get();
 
-        return view('pasien.dashboard', compact('num_of_riwayats', 'username'));
+        $appointments = DaftarPoli::with(['periksa'])
+            ->where('id_pasien', Auth::user()->id)
+            ->whereHas('periksa', function ($query) {
+                $query->whereNull('catatan');
+            })
+            ->get();
+
+        $num_of_riwayats = count($riwayats);
+        $num_of_incoming_periksa = count($appointments);
+
+        return view('pasien.dashboard', compact('num_of_riwayats', 'num_of_incoming_periksa', 'username'));
     }
 
     public function showDaftarPoliLandingPage() {
         $current_account = $this->getCurrentAccount();
         $username = $current_account->nama;
         
-        $dokters = User::where('role', 'dokter')->get();
-        
-        $riwayats = DaftarPoli::with(['periksa', 'jadwalPeriksa'])->where('id_pasien', Auth::user()->id)
+        $polis = Poli::where('is_active', 'true')->get();
+
+        $riwayats = DaftarPoli::with(['periksa', 'jadwalPeriksa'])
+            ->where('id_pasien', Auth::user()->id)
+            ->whereHas('periksa', function ($query) {
+                $query->whereNull('catatan');
+            })
             ->orderby('id', 'desc')
             ->get();
 
-        return view('pasien.daftarpoli', compact('username', 'riwayats', 'dokters'));
+        return view('pasien.daftarpoli', compact('username', 'riwayats', 'polis'));
     }
 
     public function showRiwayatLandingPage()
@@ -56,26 +76,53 @@ class PasienController extends Controller
     }
 
     public function submitDaftarPoli(Request $request) {
-
-        $validatedRequest = $request->validate([
-            'id_pasien' => 'required|numeric',
-            'id_jadwal' => 'required|numeric',
-            'keluhan' => 'required|string|max:65535',
-            'no_antrian' => 'required|numeric'
-        ]);
         
-        $new_daftar_poli = DaftarPoli::create([
-            'id_pasien' => Auth::user()->id,
-            'id_jadwal' => $validatedRequest['id_jadwal'],
-            'keluhan' => $validatedRequest['keluhan'],
-            'no_antrian' => DaftarPoli::where('id_jadwal', $request['id_jadwal'])->max('no_antrian') ?? 1
+        $validatedRequest = $request->validate([
+            'id_doctor' => 'required',
+            'keluhan' => 'required|string|max:65535',
+            'tgl_periksa' => 'required'
         ]);
 
-        Periksa::create([
+        $hari_mulai_akhir = explode(' ', $request->jadwal_periksa); 
+        $id_selected_jadwal = JadwalPeriksa::where([
+            'hari' => $hari_mulai_akhir[0],
+            'jam_mulai' => $hari_mulai_akhir[1],
+            'jam_akhir' => $hari_mulai_akhir[2],
+            'id_dokter' => $validatedRequest["id_dokter"]
+        ])->pluck('id');
+
+
+        $tgl_periksa = $validatedRequest['tgl_periksa'];
+        // Step 1: Check if a matching DaftarPoli exists with tgl_periksa via the periksa relation
+        $existing = DaftarPoli::where('id_pasien', Auth::user()->id)
+            ->where('id_jadwal', $id_selected_jadwal)
+            ->whereHas('periksa', function ($query) use ($tgl_periksa) {
+                $query->where('tgl_periksa', $tgl_periksa);
+            })
+            ->first();
+
+        // Step 2: Update or create
+        if ($existing) {
+            $existing->update([
+                'keluhan' => $validatedRequest['keluhan'],
+            ]);
+            $new_daftar_poli = $existing;
+        } else {
+            $new_daftar_poli = DaftarPoli::create([
+                'id_pasien' => Auth::user()->id,
+                'id_jadwal' => $id_selected_jadwal,
+                'keluhan' => $validatedRequest['keluhan'],
+                'no_antrian' => DaftarPoli::where('id_jadwal', $id_selected_jadwal)->max('no_antrian') + 1 ?? 1,
+            ]);
+        }
+
+        Periksa::updateOrCreate(
+            ['id_daftar_poli' => $new_daftar_poli->id],
+            [
             'id_daftar_poli' => $new_daftar_poli->id,
             'tgl_periksa' => $request['tgl_periksa']
         ]);
 
-        return redirect()->route('pasien-show-submit-daftar-poli');
+        return redirect()->route('pasien-show-daftar-poli');
     }
 }

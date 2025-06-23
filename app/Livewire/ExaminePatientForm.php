@@ -24,6 +24,10 @@ class ExaminePatientForm extends Component
         foreach ($selectedDetailPeriksas as $detailPeriksa) {
             $this->selectedObats = [...$this->selectedObats, $detailPeriksa->obat];
         }
+
+        if (isset($selectedDetailPeriksas[0])) {
+            $this->fee = $selectedDetailPeriksas[0]->periksa->biaya_periksa; 
+        }
     }
 
     public function addObat($id_obat) {

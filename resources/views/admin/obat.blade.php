@@ -1,7 +1,7 @@
 @extends('dashboard')
 
 @section('username')
-admin
+Admin
 @endsection
 
 

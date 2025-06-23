@@ -14,7 +14,7 @@
     <form action="{{ route('pasien-submit-daftar-poli') }}" method="POST">
         @csrf {{-- Tambahkan token CSRF --}}
         <div class="card-body">
-            <livewire:appointment-form :dokters='$dokters' />
+            <livewire:appointment-form :polis='$polis' />
 
             <label for="jadwal_periksa">Masukkan keluhan</label>
             <textarea name="keluhan" id="keluhan" rows="5" cols="20" class="form-control" placeholder="Masukkan keluhan Anda"></textarea>

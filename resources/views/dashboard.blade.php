@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="{{ asset('lte/AdminLTE/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('lte/AdminLTE/dist/css/adminlte.min.css') }}">
-
     @livewireStyles
 </head>
 
@@ -45,9 +44,12 @@
             <!-- Brand Logo -->
             <a href="" class="brand-link">
                 <img src="{{ asset('lte/AdminLTE/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">AdminLTE 3</span>
+                <span class="brand-text font-weight-light">HelthMeneji</span>
             </a>
-
+            @php
+            $available_pages = '';
+            $user_type = explode('-', Route::currentRouteName())[0]
+            @endphp
             <!-- Sidebar -->
             <div class="sidebar">
                 <!-- Sidebar user (optional) -->
@@ -57,6 +59,19 @@
                     </div>
                     <div class="info" style="color: lightgray;">
                         @yield('username')
+                        <?php
+                        switch ($user_type) {
+                            case 'admin':
+                                echo '<span class="right badge badge-info" style="position:absolute; right:16px;">admin</span>';
+                                break;
+                            case 'pasien':
+                                echo '<span class="right badge badge-danger" style="position:absolute; right:16px;">pasien</span>';
+                                break;
+                            case 'dokter':
+                                echo '<span class="right badge badge-success" style="position:absolute; right:16px;">dokter</span>';
+                                break;
+                        }
+                        ?>
                     </div>
                 </div>
 
@@ -65,11 +80,6 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                 with font-awesome or any other icon font library -->
-
-                        @php
-                        $available_pages = '';
-                        $user_type = explode('-', Route::currentRouteName())[0]
-                        @endphp
 
                         <li class="nav-item">
                             <a href="{{  url($user_type) }}" class="nav-link">
@@ -86,7 +96,7 @@
                         @endphp
                         @elseif ($user_type === 'dokter')
                         @php
-                        $available_pages = ['profile', 'jadwal-periksa', 'periksa', 'obat'];
+                        $available_pages = ['profile', 'jadwal-periksa', 'periksa'];
                         @endphp
                         @elseif ($user_type === 'admin')
                         @php
@@ -96,7 +106,7 @@
 
                         @foreach ($available_pages as $page)
                         <li class="nav-item">
-                            <a href="{{  url($user_type . '/' . $page) }}" class="nav-link">
+                            <a href="{{ url($user_type . '/' . $page) }}" class="nav-link">
                                 <p>
                                     {{ $page }}
                                 </p>
@@ -127,11 +137,6 @@
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1>
-                                &#40;&#40; {{ ucfirst($user_type) }} &#41;&#41; <b>@yield('username')</b>
-                            </h1>
-                        </div>
                         <div class="col-sm-6">
                         </div>
                     </div>

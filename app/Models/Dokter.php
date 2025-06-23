@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Dokter extends Model
 {
     protected $fillable = [
+        'user_id',
         'id_poli'
     ];
 

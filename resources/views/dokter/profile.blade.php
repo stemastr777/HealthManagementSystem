@@ -41,11 +41,6 @@
                                         placeholder="Input the phone number">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Email</label>
-                                    <input value="{{ $current_account->user->email }}" type="email" name="email" class="form-control" id="exampleInputEmail1"
-                                        placeholder="Input email">
-                                </div>
-                                <div class="form-group">
                                     <label for="exampleInputEmail1">Password</label>
                                     <input value="{{ $current_account->user->password }}" type="password" name="password" class="form-control" id="exampleInputEmail1"
                                         placeholder="Input password yang baru">

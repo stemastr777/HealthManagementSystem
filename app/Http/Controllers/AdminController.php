@@ -3,23 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\DaftarPoli;
 use App\Models\Dokter;
 use App\Models\Obat;
 use App\Models\Pasien;
 use App\Models\Poli;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 
 class AdminController extends Controller
 {
     
     public function index() {
-        $num_of_available_obat = count(Obat::where('is_active', 'true')->get());
+        $num_of_registered_obat = count(Obat::all());
+        $num_of_registered_dokter = count(Dokter::all());
+        $num_of_registered_poli = count(Poli::all());
+        $num_of_registered_pasien = count(Pasien::all());
 
-        return view('admin.dashboard', compact('num_of_available_obat'));
+        return view('admin.dashboard', compact('num_of_registered_obat', 'num_of_registered_dokter', 'num_of_registered_pasien', 'num_of_registered_poli'));
     }
 
     public function showDokterLandingPage() {
@@ -54,6 +56,7 @@ class AdminController extends Controller
             'alamat' => $validatedRequest["alamat"],
             'no_hp' => $validatedRequest["no_hp"],
             'password' => $validatedRequest["password"],
+            'role' => 'dokter'
         ]);
 
         $new_dokter = Dokter::updateOrCreate(
@@ -99,7 +102,7 @@ class AdminController extends Controller
             'nama' => $validatedRequest["nama"],
             'alamat' => $validatedRequest["alamat"],
             'no_hp' => $validatedRequest["no_hp"],
-            'password' => $validatedRequest["password"],
+            'password' => Hash::make($validatedRequest['password']),
             'role' => 'pasien'
         ]);
 
@@ -148,7 +151,8 @@ class AdminController extends Controller
     public function updateOrCreatePoli(Request $request) {
         $validatedRequest = $request->validate(
             [
-                'nama_poli' => 'string|required'
+                'nama_poli' => 'string|required',
+                'keterangan' => 'string'
             ]
         );
         
@@ -159,7 +163,6 @@ class AdminController extends Controller
                 'keterangan' => $validatedRequest['keterangan']
             ]
         );
-
 
         return redirect()->route('admin-show-poli');
     }
