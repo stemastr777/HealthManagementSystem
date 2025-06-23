@@ -17,7 +17,7 @@ admin
         <div class="card-body">
             <div class="form-group">
                 <label for="nama">Nama Poli</label>
-                <input type="text" name="nama_poli" class="form-control" placeholder="Input nama poli" value="{{$poli_in_edit?->nama_poli ?? ''}}" />
+                <input type="text" name="nama_poli" class="form-control" placeholder="Input nama poli" <?php echo isset($poli_in_edit) ? 'readonly' : '' ?> value="{{$poli_in_edit?->nama_poli ?? ''}}" />
             </div>
             <div class="form-group">
                 <label for="keterangan">Keterangan</label>

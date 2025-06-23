@@ -17,7 +17,7 @@ admin
         <div class="card-body">
             <div class="form-group">
                 <label for="nama">Nama Dokter</label>
-                <input type="text" name="nama" class="form-control" placeholder="Input nama dokter" value="{{$dokter_in_edit?->user->nama ?? ''}}" />
+                <input type="text" name="nama" class="form-control" placeholder="Input nama dokter" <?php echo isset($dokter_in_edit) ? 'readonly' : '' ?> value="{{$dokter_in_edit?->user->nama ?? ''}}" />
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
@@ -37,8 +37,7 @@ admin
                     @foreach ($polis as $poli)
                     <option
                         value="{{$poli->id}}"
-                        {{ ($dokter_in_edit?->id_poli ?? null) == $poli->id ? 'selected' : '' }}
-                    >
+                        {{ ($dokter_in_edit?->id_poli ?? null) == $poli->id ? 'selected' : '' }}>
                         {{$poli->nama_poli}}
                     </option>
                     @endforeach

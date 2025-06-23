@@ -59,8 +59,8 @@
                             <tbody>
                                 @foreach ($riwayats_pasien as $riwayat)
                                 <tr>
-                                    <td>{{ $riwayat->jadwalPeriksa->dokter->user->nama }}</td>
                                     <td>{{ $riwayat->jadwalPeriksa->hari . ', ' .  $riwayat->periksa->tgl_periksa . ' ' . $riwayat->jadwalPeriksa->jam_mulai . '-' . $riwayat->jadwalPeriksa->jam_selesai}}</td>
+                                    <td>{{ $riwayat->jadwalPeriksa->dokter->user->nama }}</td>
                                     <td>{{ $riwayat->keluhan }}</td>
                                     <td>{{ $riwayat->periksa->catatan }}</td>
                                     <td>

@@ -57,7 +57,7 @@ class DokterController extends Controller
         $username = $current_account->nama;
 
         $periksa = Periksa::with('daftarPolis.pasiens')->find($id);
-        $obats = Obat::all();
+        $obats = Obat::where('is_active', 'true')->get();
 
         $id_pasien = $periksa->daftarPolis->pasiens->id;
         $riwayats_pasien = DaftarPoli::with(['periksa', 'jadwalPeriksa'])
@@ -159,9 +159,14 @@ class DokterController extends Controller
             'hari' => $validatedRequest['hari'],
             'jam_mulai' => $validatedRequest['jam_mulai'],
             'jam_selesai' => $validatedRequest['jam_selesai'],
+            'is_active' => 'false'
         ]);
 
-        return $this->activateJadwalPeriksa($new_jadwal->id);
+        if (JadwalPeriksa::where('id_dokter', Auth::user()->id)->get()->count() == 1) {
+            return $this->activateJadwalPeriksa($new_jadwal->id);
+        } else {
+            return redirect()->route('dokter-show-jadwal-periksa');
+        }
     }
 
     public function activateJadwalPeriksa($id) {

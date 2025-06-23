@@ -17,7 +17,7 @@ admin
         <div class="card-body">
             <div class="form-group">
                 <label for="nama">Nama Pasien</label>
-                <input type="text" name="nama" class="form-control" placeholder="Input nama pasien" value="{{$pasien_in_edit?->users->nama ?? ''}}" />
+                <input type="text" name="nama" class="form-control" placeholder="Input nama pasien" <?php echo isset($pasien_in_edit) ? 'readonly' : '' ?> value="{{$pasien_in_edit?->users->nama ?? ''}}" />
             </div>
             <div class="form-group">
                 <label for="nama">Password</label>

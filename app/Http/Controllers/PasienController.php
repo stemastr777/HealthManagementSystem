@@ -76,9 +76,8 @@ class PasienController extends Controller
     }
 
     public function submitDaftarPoli(Request $request) {
-        
         $validatedRequest = $request->validate([
-            'id_doctor' => 'required',
+            'id_dokter' => 'required',
             'keluhan' => 'required|string|max:65535',
             'tgl_periksa' => 'required'
         ]);
@@ -87,9 +86,9 @@ class PasienController extends Controller
         $id_selected_jadwal = JadwalPeriksa::where([
             'hari' => $hari_mulai_akhir[0],
             'jam_mulai' => $hari_mulai_akhir[1],
-            'jam_akhir' => $hari_mulai_akhir[2],
+            'jam_selesai' => $hari_mulai_akhir[2],
             'id_dokter' => $validatedRequest["id_dokter"]
-        ])->pluck('id');
+        ])->pluck('id')->first();
 
 
         $tgl_periksa = $validatedRequest['tgl_periksa'];

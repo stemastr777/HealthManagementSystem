@@ -25,7 +25,11 @@ class AdminController extends Controller
     }
 
     public function showDokterLandingPage() {
-        $dokters = Dokter::with(['user', 'polis'])->get();
+        $dokters = Dokter::with(['user', 'polis'])
+                    ->whereHas('user', function ($query) {
+                        $query->where('is_active', 'true');
+                    })
+                    ->get();
         $polis = Poli::where('is_active', 'true')->get();
 
         return view('admin.dokter', compact('dokters', 'polis'));
@@ -134,7 +138,10 @@ class AdminController extends Controller
     }
 
     public function showEditPasienPage($id_pasien) {
-        $pasiens = Pasien::where('is_active', 'true')->get();
+        $pasiens = Pasien::with('users')
+                    ->whereHas('users', function ($query) {
+                        $query->where('is_active', 'true');
+                    })->get();
         $pasien_in_edit = Pasien::with('users')->find($id_pasien);
 
         return view('admin.pasien', compact('pasiens', 'pasien_in_edit'));
