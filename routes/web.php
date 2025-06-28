@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/dokter/jadwal-periksa', [DokterController::class, 'showJadwalPeriksaLandingPage'])->name('dokter-show-jadwal-periksa');
             Route::post('/dokter/jadwal-periksa/new', [DokterController::class, 'addJadwalPeriksa'])->name('dokter-add-jadwal-periksa');
             Route::put('/dokter/jadwal-periksa/{id_periksa}', [DokterController::class, 'activateJadwalPeriksa'])->name('dokter-activate-jadwal-periksa');
+            Route::put('/dokter/jadwal-periksa', [DokterController::class, 'clearActiveJadwalPeriksa'])->name('dokter-clear-jadwal-periksa');
+            
 
             Route::get('/dokter/periksa', [DokterController::class, 'showPeriksaLandingPage'])->name('dokter-show-periksa');
             Route::get('/dokter/periksa/{id}', [DokterController::class, 'examinePasien'])->name('dokter-periksa-pasien');

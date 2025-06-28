@@ -44,8 +44,15 @@ class DokterController extends Controller
 
         $periksas = Periksa::with(['daftarPolis.jadwalPeriksa'])
                 ->whereHas('daftarPolis.jadwalPeriksa', function ($query) use ($current_account) {
-                    $query->where('id_dokter', $current_account->id);
-                })                
+                    $query->where([
+                        ['id_dokter', $current_account->id]
+                    ]);
+                })
+                ->whereHas('daftarPolis.pasiens', function ($query) {
+                    $query->where([
+                        ['is_active', 'true']
+                    ]);
+                })             
                 ->orderby('tgl_periksa', 'desc')
                 ->get();
     
@@ -180,5 +187,13 @@ class DokterController extends Controller
         return redirect()->route('dokter-show-jadwal-periksa');
     }
 
-    
+    public function clearActiveJadwalPeriksa() {
+
+        JadwalPeriksa::where([
+            ['is_active', 'true'],
+            ['id_dokter', $this->getCurrentAccount()->id]
+        ])->update(['is_active' => 'false']);
+
+        return redirect()->route('dokter-show-jadwal-periksa');
+    }
 }

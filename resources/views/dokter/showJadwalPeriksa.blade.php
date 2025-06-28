@@ -68,7 +68,13 @@
                     <td>{{ $jadwal['jam_selesai'] }}</td>
                     <td>
                         @if ($jadwal->is_active === 'true')
-                            <p style="color: green;">Activated</p>
+                            <span style="color: green; margin-right: 20px;">Activated</span>
+                            <form action="{{ route('dokter-clear-jadwal-periksa', $jadwal->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="btn btn-danger" style="width: fit-content;">Disable</button>
+                            </form>
+
                         @else
                             <form action="{{ route('dokter-activate-jadwal-periksa', $jadwal->id) }}" method="POST" style="display: inline;">
                                 @csrf

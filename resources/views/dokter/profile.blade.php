@@ -1,7 +1,7 @@
 @extends('dashboard')
 
 @section('username')
-{{ $current_account->nama }}
+{{ $current_account->user->nama }}
 @endsection
 
 @section('main-content')
